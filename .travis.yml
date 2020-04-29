@@ -1,12 +1,7 @@
-language: java
-
-os: linux
-dist: bionic
-
-jdk: openjdk8
-
-jobs:
+matrix:
   include:
-    - stage: Maven
+    - os: linux
+      language: java
+      dist: bionic
       script:
-        - mvn verify
+        - mvn test

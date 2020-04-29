@@ -1,13 +1,12 @@
-import org.junit.Assert;
-import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
-import java.io.IOException;
 import java.util.stream.Stream;
+import java.io.IOException;
 
 public class matrixTest
 {
@@ -16,7 +15,7 @@ public class matrixTest
     {
         double[][] matrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         double[][] expectedMat = {{5, 10, 15}, {20, 25, 30}, {35, 40, 45}};
-        Assert.assertArrayEquals(Matrix.multiplyOnNum(matrix, 5), expectedMat);
+        assertArrayEquals(Matrix.multiplyOnNum(matrix, 5), expectedMat);
     }
 
     @Test
@@ -24,7 +23,7 @@ public class matrixTest
     {
         double[][] matrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         double[][] expectedMat = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-        Assert.assertArrayEquals(Matrix.multiplyOnNum(matrix, 0), expectedMat);
+        assertArrayEquals(Matrix.multiplyOnNum(matrix, 0), expectedMat);
     }
 
     @Test
@@ -38,8 +37,8 @@ public class matrixTest
     public void randMatrixTest1()
     {
         double[][] firstMatrix = Matrix.randomMatrix(5, 5);
-        Assert.assertEquals(firstMatrix.length, 5);
-        Assert.assertEquals(firstMatrix[0].length, 5);
+        assertEquals(firstMatrix.length, 5);
+        assertEquals(firstMatrix[0].length, 5);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class matrixTest
         double[][] firstMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         double[][] secondMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         double[][] expectedMatrix = Matrix.multiplyOnNum(firstMatrix, 2);
-        Assert.assertArrayEquals(expectedMatrix, Matrix.sum(firstMatrix, secondMatrix));
+        assertArrayEquals(expectedMatrix, Matrix.sum(firstMatrix, secondMatrix));
     }
 
     @Test
@@ -106,13 +105,13 @@ public class matrixTest
     @ParameterizedTest
     @MethodSource("paramsForMultiply")
     public void paramMultiplyTest(double[][] firstMatrix, double[][] secondMatrix, double[][] expectedMatrix) {
-        Assert.assertArrayEquals(expectedMatrix, Matrix.multiply(firstMatrix, secondMatrix));
+        assertArrayEquals(expectedMatrix, Matrix.multiply(firstMatrix, secondMatrix));
     }
 
     @ParameterizedTest
     @MethodSource("paramsForDiff")
     public void paramDiffTest(double[][] firstMatrix, double[][] secondMatrix, double[][] expectedMatrix) {
-        Assert.assertArrayEquals(expectedMatrix, Matrix.diff(firstMatrix, secondMatrix));
+        assertArrayEquals(expectedMatrix, Matrix.diff(firstMatrix, secondMatrix));
     }
 
     private static Stream<Arguments> paramsForMultiply() {

@@ -1,6 +1,13 @@
 import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import java.io.IOException;
+import java.util.stream.Stream;
 
 public class matrixTest
 {
@@ -25,32 +32,6 @@ public class matrixTest
     {
         double[][] matrix = {};
         assertThrows(IllegalArgumentException.class, () -> Matrix.multiplyOnNum(matrix, 4));
-    }
-
-    @Test
-    public void matrixDiffTest1()
-    {
-        double[][] firstMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        double[][] secondMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        double[][] expectedMatrix = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-        Assert.assertArrayEquals(expectedMatrix, Matrix.diff(firstMatrix, secondMatrix));
-    }
-
-    @Test
-    public void matrixDiffTest2()
-    {
-        double[][] firstMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        double[][] secondMatrix = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
-        double[][] expectedMatrix = {{1, 1, 1}, {1, 1, 1}, {1, 1, 1}};
-        Assert.assertArrayEquals(expectedMatrix, Matrix.diff(firstMatrix, secondMatrix));
-    }
-
-    @Test
-    public void matrixDiffTest3()
-    {
-        double[][] firstMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        double[][] secondMatrix = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
-        assertThrows(IllegalArgumentException.class, () -> Matrix.diff(firstMatrix, secondMatrix));
     }
 
     @Test
@@ -94,30 +75,12 @@ public class matrixTest
     public void matrixMultiplyTest1()
     {
         double[][] firstMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        double[][] secondMatrix = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}};
-        double[][] expectedMatrix = {{24, 30, 36}, {51, 66, 81}, {78, 102, 126}};
-        Assert.assertArrayEquals(expectedMatrix, Matrix.multiply(firstMatrix, secondMatrix));
-    }
-
-    @Test
-    public void matrixMultiplyTest2()
-    {
-        double[][] firstMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        double[][] secondMatrix = {{0}, {1}, {2}};
-        double[][] expectedMatrix = {{8}, {17}, {26}};
-        Assert.assertArrayEquals(expectedMatrix, Matrix.multiply(firstMatrix, secondMatrix));
-    }
-
-    @Test
-    public void matrixMultiplyTest3()
-    {
-        double[][] firstMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
         double[][] secondMatrix = {{0, 1, 2}};
         assertThrows(IllegalArgumentException.class, () -> Matrix.multiply(firstMatrix, secondMatrix));
     }
 
     @Test
-    public void matrixMultiplyTest4()
+    public void matrixMultiplyTest2()
     {
         double[][] firstMatrix = Matrix.randomMatrix(100, 100);
         double[][] secondMatrix = Matrix.randomMatrix(2, 100);
@@ -125,10 +88,57 @@ public class matrixTest
     }
 
     @Test
-    public void matrixMultiplyTest5()
+    public void matrixMultiplyTest3()
     {
         double[][] firstMatrix = Matrix.randomMatrix(30, 100);
         double[][] secondMatrix = Matrix.randomMatrix(100, 50);
         Matrix.multiply(firstMatrix, secondMatrix);
+    }
+
+    @Test
+    public void matrixDiffTest()
+    {
+        double[][] firstMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        double[][] secondMatrix = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9, 10, 11}};
+        assertThrows(IllegalArgumentException.class, () -> Matrix.diff(firstMatrix, secondMatrix));
+    }
+
+    @ParameterizedTest
+    @MethodSource("paramsForMultiply")
+    public void paramMultiplyTest(double[][] firstMatrix, double[][] secondMatrix, double[][] expectedMatrix) {
+        Assert.assertArrayEquals(expectedMatrix, Matrix.multiply(firstMatrix, secondMatrix));
+    }
+
+    @ParameterizedTest
+    @MethodSource("paramsForDiff")
+    public void paramDiffTest(double[][] firstMatrix, double[][] secondMatrix, double[][] expectedMatrix) {
+        Assert.assertArrayEquals(expectedMatrix, Matrix.diff(firstMatrix, secondMatrix));
+    }
+
+    private static Stream<Arguments> paramsForMultiply() {
+        return Stream.of(
+                Arguments.of(new double[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                        new double[][] {{0}, {1}, {2}},
+                        new double[][] {{8}, {17}, {26}}),
+                Arguments.of(new double[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                        new double[][] {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}},
+                        new double[][] {{24, 30, 36}, {51, 66, 81}, {78, 102, 126}}));
+    }
+
+    private static Stream<Arguments> paramsForDiff() {
+        return Stream.of(
+                Arguments.of(new double[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                        new double[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                        new double[][] {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}}),
+                Arguments.of(new double[][] {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}},
+                        new double[][] {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}},
+                        new double[][] {{1, 1, 1}, {1, 1, 1}, {1, 1, 1}}));
+    }
+
+    @Test
+    public void readFromFileTest() throws IOException {
+        double [][] firstMatrix = Matrix.readFromFile("resources/matrixFile.txt");
+        double [][] expMatrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        assertArrayEquals(expMatrix, firstMatrix);
     }
 }

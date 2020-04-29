@@ -1,3 +1,11 @@
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+
 public class Matrix {
 
     public static double[][] multiply(double[][] firstMatrix, double[][] secondMatrix) {
@@ -92,7 +100,7 @@ public class Matrix {
             throw new IllegalArgumentException("Matrix sizes are negative");
         }
 
-        double [][] result = new double[rows][columns];
+        double[][] result = new double[rows][columns];
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -100,5 +108,19 @@ public class Matrix {
             }
         }
         return result;
+    }
+
+    public static double[][] readFromFile(String path) throws IOException {
+        List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);
+        int m = lines.get(0).split(" ").length;
+        int n = lines.size();
+        double[][] matrix = new double[n][m];
+        for(int i = 0; i < n; i++){
+            String [] splittedLine = lines.get(i).split(" ");
+            for (int j = 0; j < splittedLine.length; j++) {
+                matrix[i][j] = Double.parseDouble(splittedLine[j]);
+            }
+        }
+        return matrix;
     }
 }
